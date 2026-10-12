@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoevaluación de estándares mínimos SG-SST (Res. 0312 de 2019) | Puntal SST</title>
+<meta name="description" content="Autoevaluación gratuita de estándares mínimos del SG-SST según la Resolución 0312 de 2019: escoge el grupo de 7, 21 o 60 estándares, califica con la tabla de valores del artículo 27 y arma el plan de mejoramiento para imprimir.">
+<link rel="canonical" href="https://outils.vread.fr/puntal-sst/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:title" content="Autoevaluación de estándares mínimos SG-SST, Resolución 0312 de 2019">
+<meta property="og:description" content="7, 21 o 60 estándares según trabajadores y clase de riesgo. Tabla de valores del art. 27 y plan de mejoramiento imprimible. Gratis.">
+<meta property="og:url" content="https://outils.vread.fr/puntal-sst/">
+<meta property="og:image" content="https://outils.vread.fr/puntal-sst/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Puntal SST: autoevaluación de estándares mínimos","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"es-CO","isAccessibleForFree":true,"url":"https://outils.vread.fr/puntal-sst/","provider":{"@type":"Organization","name":"READ FRANCE SAS","address":{"@type":"PostalAddress","addressLocality":"París","addressCountry":"FR"},"email":"octave@vread.fr"}}</script>
+<script src="assets/estandares.js" defer></script>
+<script src="assets/engine.js" defer></script>
+<script src="assets/app.js" defer></script>
+<script src="assets/mesure.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#herramienta">Ir a la autoevaluación</a>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="./" aria-label="Puntal SST, inicio">
+      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="3" y="3" width="26" height="4" rx="1" fill="currentColor"/><rect x="14" y="7" width="4" height="18" fill="currentColor"/><rect x="7" y="25" width="18" height="4" rx="1" fill="currentColor"/><path d="M18 11 L26 19" stroke="var(--accent-2)" stroke-width="3"/></svg>
+      <span>Puntal <b>SST</b></span>
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#herramienta">Autoevaluación</a>
+      <a href="#grupos">7, 21 o 60</a>
+      <a href="#kit">Kit y licencia</a>
+      <a href="#metodo">Cómo calculamos</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="eyebrow">Resolución 0312 de 2019 · Ministerio del Trabajo</p>
+      <h1>Autoevaluación de estándares mínimos del SG‑SST, con la tabla de valores oficial</h1>
+      <p class="lead">Escriba cuántos trabajadores tiene la empresa y su clase de riesgo ante la ARL. La herramienta escoge el grupo que le aplica (7, 21 o 60 estándares), califica cada ítem con los valores del artículo 27 y arma el plan de mejoramiento que pide el artículo 28, listo para imprimir y firmar.</p>
+      <p class="who">Pensada para el responsable del SG-SST (técnico, tecnólogo o profesional con licencia) y para la empresa que trabaja con él. Gratis, sin registro. Los datos que escriba se quedan en su navegador.</p>
+      <p class="warn-inline">No reemplaza a la persona que diseña el SG-SST: los artículos 4, 10 y 17 exigen licencia vigente en SST y el curso virtual de 50 horas. <a href="#limites">Lo que Puntal SST no hace</a>.</p>
+    </div>
+
+    <form id="paso1" class="card step1" novalidate aria-labelledby="paso1-t">
+      <h2 id="paso1-t"><span class="num">1</span> Datos de la empresa</h2>
+      <label for="f-trab">Número de trabajadores</label>
+      <input id="f-trab" name="trabajadores" type="number" inputmode="numeric" min="1" step="1" required placeholder="Ej.: 8">
+      <p class="hint">Cuente a todos: dependientes, independientes, cooperados, estudiantes y trabajadores en misión que prestan servicios en sus sedes (art. 23).</p>
+      <fieldset>
+        <legend>Clase de riesgo (afiliación a la ARL)</legend>
+        <div class="seg" role="radiogroup">
+          <label><input type="radio" name="riesgo" value="1" required><span>I</span></label>
+          <label><input type="radio" name="riesgo" value="2"><span>II</span></label>
+          <label><input type="radio" name="riesgo" value="3"><span>III</span></label>
+          <label><input type="radio" name="riesgo" value="4"><span>IV</span></label>
+          <label><input type="radio" name="riesgo" value="5"><span>V</span></label>
+        </div>
+      </fieldset>
+      <label class="check"><input id="f-upa" type="checkbox" name="upa"><span>Es una unidad de producción agropecuaria (finca, predio agrícola, pecuario, forestal, pesquero o acuícola)</span></label>
+      <details class="opt">
+        <summary>Datos para el informe impreso (opcional)</summary>
+        <label for="f-emp">Razón social</label>
+        <input id="f-emp" name="empresa" autocomplete="organization" maxlength="120">
+        <label for="f-nit">NIT</label>
+        <input id="f-nit" name="nit" inputmode="numeric" maxlength="20" placeholder="900123456-7">
+        <label for="f-resp">Responsable del SG-SST y número de licencia</label>
+        <input id="f-resp" name="responsable" maxlength="120">
+        <label for="f-fecha">Fecha de la autoevaluación</label>
+        <input id="f-fecha" name="fecha" type="date">
+      </details>
+      <p class="err" id="paso1-err" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Ver qué estándares me aplican</button>
+    </form>
+  </div>
+</section>
+
+<section id="herramienta" class="tool" aria-live="polite">
+  <div class="wrap">
+    <div id="grupo" class="card group-card" hidden></div>
+    <div id="paso2" hidden>
+      <div class="step-head">
+        <h2><span class="num">2</span> Califique cada estándar</h2>
+        <p>Marque <b>Cumple</b> solo si tiene la evidencia que pide la columna «modo de verificación». Sin soporte, la resolución califica el ítem en cero (nota de la tabla del art. 27).</p>
+        <p class="progress" id="progreso"></p>
+      </div>
+      <div id="lista"></div>
+      <div class="actions sticky">
+        <span id="progreso2"></span>
+        <button class="btn primary" id="btn-resultado" type="button">Ver resultado y plan de mejoramiento</button>
+      </div>
+    </div>
+    <div id="paso3" hidden></div>
+  </div>
+</section>
+
+<section id="grupos" class="band">
+  <div class="wrap">
+    <h2>¿7, 21 o 60 estándares? Depende de dos datos</h2>
+    <p>La resolución cruza el número de trabajadores con la clase de riesgo. La clase IV o V lleva a los 60 estándares aunque la empresa sea pequeña.</p>
+    <div class="table-scroll">
+    <table class="matrix">
+      <caption>Grupo de estándares mínimos según la Resolución 0312 de 2019</caption>
+      <thead><tr><th scope="col">Trabajadores</th><th scope="col">Riesgo I, II o III</th><th scope="col">Riesgo IV o V</th><th scope="col">Quién puede diseñar el SG-SST</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">10 o menos</th><td><b>7 estándares</b> (art. 3)<br><span class="small">Unidad agropecuaria: 3 estándares (art. 7)</span></td><td><b>60 estándares</b> (art. 8)</td><td>Técnico en SST con licencia, 1 año de experiencia y curso de 50 horas, o tecnólogo o profesional (art. 4)</td></tr>
+        <tr><th scope="row">11 a 50</th><td><b>21 estándares</b> (art. 9)</td><td><b>60 estándares</b> (art. 15)</td><td>Tecnólogo en SST con licencia, 2 años de experiencia y curso de 50 horas, o profesional (art. 10)</td></tr>
+        <tr><th scope="row">Más de 50</th><td colspan="2"><b>60 estándares</b> (art. 16)</td><td>Profesional en SST o con posgrado, con licencia y curso de 50 horas (art. 17). Si el riesgo es IV o V, aplica este mismo perfil aunque la empresa tenga 50 o menos.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="small">El art. 4 agrega que quien solo tiene el curso de 50 horas puede administrar y ejecutar el SG-SST de una empresa de 10 o menos trabajadores en riesgo I, II o III, pero no diseñarlo. Las personas naturales con servicio doméstico tendrán sus estándares en otro acto (art. 2, parágrafo 3), y los independientes con afiliación voluntaria no están obligados (parágrafo 2).</p>
+  </div>
+</section>
+
+<section id="kit" class="kit">
+  <div class="wrap">
+    <p class="eyebrow">Preventa · todavía no está a la venta</p>
+    <h2>Kit de documentos SG-SST para que su responsable lo adapte y firme</h2>
+    <p class="lead-s">Plantillas en Word y Excel, en el orden del ciclo PHVA, con la referencia de la norma en cada documento. Las arma Octave, el asistente de IA de READ FRANCE, a partir del Decreto 1072 de 2015 y la Resolución 0312 de 2019. No son un SG-SST diseñado: su técnico, tecnólogo o profesional con licencia las ajusta a la empresa.</p>
+    <div class="kit-grid">
+      <article class="offer">
+        <h3>Kit de documentos, una empresa</h3>
+        <p class="price"><span id="precio-kit">COP 149.000</span> <span class="per">al año, por empresa</span></p>
+        <ul class="docs">
+          <li>Política de SST (art. 2.2.4.6.5 del Decreto 1072) con objetivos y espacio de firma</li>
+          <li>Matriz de identificación de peligros, evaluación y valoración de riesgos (IPEVR) en Excel, con la estructura de la GTC 45</li>
+          <li>Plan anual de trabajo con cronograma de 12 meses</li>
+          <li>Matriz legal de partida, con los artículos que usa cada documento</li>
+          <li>Formatos de inspección de instalaciones, equipos y botiquín</li>
+          <li>Formato de investigación de incidentes y accidentes de trabajo</li>
+          <li>Plan de prevención, preparación y respuesta ante emergencias</li>
+        </ul>
+        <p class="small">Incluye las actualizaciones del año si cambia la norma. Venta solo a empresas y profesionales con NIT.</p>
+        <button class="btn primary" type="button" data-oferta="kit">Reservar el kit (no se cobra nada hoy)</button>
+      </article>
+      <article class="offer alt">
+        <h3>Licencia consultor</h3>
+        <p class="price"><span>COP 99.000</span> <span class="per">al mes, hasta 20 empresas</span></p>
+        <p>Para el técnico, tecnólogo o profesional en SST que lleva varias empresas: el mismo kit para cada cliente, la autoevaluación guardada por empresa y un tablero con las fechas del año (autoevaluación de diciembre, informe de avance de julio a la ARL, plazo del reporte de 3 o 6 meses).</p>
+        <p class="small">Los documentos salen con el nombre de su firma o el de su cliente. Usted sigue siendo el responsable del diseño ante la empresa y la autoridad.</p>
+        <button class="btn" type="button" data-oferta="consultor">Anotarme en la lista de consultores</button>
+      </article>
+    </div>
+
+    <form id="preventa" class="card preventa" hidden novalidate aria-labelledby="pv-t">
+      <h3 id="pv-t">Reserva sin pago</h3>
+      <p class="small">No pedimos tarjeta. Cuando el kit esté listo le escribimos una sola vez con el enlace de pago y el precio que vio en esta página. Si no le interesa, no pasa nada.</p>
+      <fieldset>
+        <legend>Qué quiere reservar</legend>
+        <label class="check"><input type="radio" name="oferta" value="kit" checked><span>Kit de documentos (<span class="precio-kit-2">COP 149.000</span> al año)</span></label>
+        <label class="check"><input type="radio" name="oferta" value="consultor"><span>Licencia consultor (COP 99.000 al mes)</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Usted es</legend>
+        <label class="check"><input type="radio" name="perfil" value="empresa" checked><span>Una empresa (empleador o contratante)</span></label>
+        <label class="check"><input type="radio" name="perfil" value="consultor"><span>Consultor o asesor en SST con licencia</span></label>
+      </fieldset>
+      <label for="pv-razon">Razón social</label>
+      <input id="pv-razon" name="razon_social" autocomplete="organization" required maxlength="160">
+      <div class="row-nit">
+        <div><label for="pv-nit">NIT (sin dígito de verificación)</label><input id="pv-nit" name="nit" inputmode="numeric" required maxlength="15" placeholder="900123456"></div>
+        <div><label for="pv-dv">DV</label><input id="pv-dv" name="dv" inputmode="numeric" required maxlength="1" placeholder="7"></div>
+      </div>
+      <label for="pv-email">Correo de contacto</label>
+      <input id="pv-email" name="email" type="email" autocomplete="email" required maxlength="254">
+      <div id="pv-empresas-w" hidden>
+        <label for="pv-empresas">¿Cuántas empresas asesora?</label>
+        <select id="pv-empresas" name="empresas"><option value="">Prefiero no decir</option><option value="1-5">1 a 5</option><option value="6-20">6 a 20</option><option value="21-50">21 a 50</option><option value="mas50">Más de 50</option></select>
+      </div>
+      <div id="pv-resp-w">
+        <label for="pv-resp">¿Ya tiene responsable del SG-SST con licencia?</label>
+        <select id="pv-resp" name="responsable_sst"><option value="">Prefiero no decir</option><option value="si">Sí</option><option value="no">No</option><option value="buscando">Lo estoy buscando</option></select>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="pv-hp">No llene este campo</label><input id="pv-hp" name="hp" tabindex="-1" autocomplete="off"></div>
+      <label class="check consent"><input type="checkbox" id="pv-consent" required><span>Autorizo a READ FRANCE SAS a tratar estos datos para avisarme del lanzamiento del producto reservado, según la <a href="privacidad.html">política de tratamiento de datos</a> (Ley 1581 de 2012). Entiendo que se guardan en servidores de Google fuera de Colombia.</span></label>
+      <p class="err" id="pv-err" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Enviar reserva</button>
+      <p class="ok" id="pv-ok" role="status" hidden></p>
+    </form>
+  </div>
+</section>
+
+<section id="metodo" class="band">
+  <div class="wrap prose">
+    <h2>Cómo calculamos el puntaje</h2>
+    <p>Leímos la Resolución 0312 de 2019 en la edición 50.872 del Diario Oficial (19 de febrero de 2019) y en la compilación jurídica del SENA. La tabla de valores del artículo 27 tiene 60 ítems, del 1.1.1 al 7.1.4, que suman 100. Cada ítem vale su máximo si se cumple y cero si no.</p>
+    <p>Para las empresas de 7 y 21 estándares, el artículo 27 ordena dar el valor máximo, en la columna «No aplica», a los ítems de la tabla que no les corresponden. Así lo calculamos. El efecto es fuerte: los 7 estándares pesan 12,5 puntos, de modo que una empresa que no cumple ninguno queda en 87,5 y, con la escala del artículo 28, en «Aceptable». Los 21 estándares pesan 37,75 puntos. Por eso el resultado muestra primero cuántos estándares cumple: el artículo 23 obliga a cumplirlos todos.</p>
+    <p>La resolución no publica qué ítem de la tabla corresponde a cada uno de los 7 o 21 estándares. Usamos el ítem del artículo 16 que lleva el mismo nombre. Revise esta correspondencia con su responsable del SG-SST:</p>
+    <details class="mapping"><summary>Ver la correspondencia de los 7 y los 21 estándares con la tabla</summary><div id="tabla-map"></div></details>
+    <p>Valoración del artículo 28: menos de 60 % es crítico (plan de mejoramiento inmediato y reporte de avances a la ARL en máximo 3 meses); de 60 % a 85 %, moderadamente aceptable (reporte en máximo 6 meses); más de 85 %, aceptable (mantener la calificación y las evidencias, e incluir las mejoras en el plan anual).</p>
+    <p class="small">Fuentes: <a href="https://normograma.sena.edu.co/compilacion/docs/resolucion_mtra_0312_2019.htm" rel="noopener">Resolución 0312 de 2019, compilación jurídica del SENA</a> · <a href="http://svrpubindc.imprenta.gov.co/diario/" rel="noopener">Diario Oficial, Imprenta Nacional, edición 50.872</a> (la tabla de valores está en la página 15) · <a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=72173" rel="noopener">Decreto 1072 de 2015, Función Pública</a>. Textos consultados el 13 de octubre de 2026. El sitio del Ministerio del Trabajo no respondió desde nuestra red ese día.</p>
+  </div>
+</section>
+
+<section id="limites" class="limits">
+  <div class="wrap prose">
+    <h2>Lo que Puntal SST no hace</h2>
+    <ul>
+      <li>No diseña ni implementa el SG-SST. Ese trabajo lo firma una persona con licencia vigente en SST y el curso de 50 horas, con el perfil que fijan los artículos 4, 10 y 17.</li>
+      <li>No es una certificación ni una acreditación. El Ministerio del Trabajo, el SENA y las ARL no han revisado ni avalado esta herramienta.</li>
+      <li>No registra la autoevaluación ante el Ministerio ni la envía a su ARL. El artículo 28 pide enviar el plan de mejoramiento a la ARL y el informe de avance en julio; eso lo hace la empresa.</li>
+      <li>No cubre otras obligaciones: plan estratégico de seguridad vial (art. 32), actividades de alto riesgo (art. 31) o prevención de accidentes en industrias mayores (art. 33).</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<div id="informe" class="report" aria-hidden="true"></div>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div>
+      <p class="brand-s">Puntal SST</p>
+      <p>Producto independiente de <b>READ FRANCE SAS</b>, SIREN 988 741 773, París, Francia. Contacto: <a href="mailto:octave@vread.fr">octave@vread.fr</a>.</p>
+      <p>Textos y herramienta preparados por Octave, asistente de inteligencia artificial de READ FRANCE, a partir del texto oficial de la norma. Si encuentra un error, escríbanos y lo corregimos con la fuente.</p>
+    </div>
+    <div>
+      <p class="disclaimer"><b>Aviso.</b> Puntal SST es una herramienta de apoyo para la autoevaluación de estándares mínimos. No es asesoría jurídica ni técnica, no sustituye el diseño del SG-SST por una persona con licencia en SST (Resolución 0312 de 2019, arts. 4, 10 y 17) y no tiene vínculo con el Ministerio del Trabajo, el SENA ni ninguna ARL. Verifique cada resultado con su responsable del SG-SST.</p>
+      <p><a href="privacidad.html">Tratamiento de datos (Ley 1581 de 2012)</a> · <a href="terminos.html">Términos de uso</a></p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
