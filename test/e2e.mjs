@@ -148,7 +148,7 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   check(`[${tag}] pre-order: success or e-mail fallback, never a silent failure`, okShown || fallback === 1);
 
   check(`[${tag}] no JS errors`, errors.length === 0, errors.join(' | '));
-  if (LIVE) check(`[${tag}] tracking sent view, grupo, evaluar, imprimir, csv, preventa_abrir`, ['view', 'grupo', 'evaluar', 'csv', 'preventa_abrir'].every(e => tracked.includes(e)), tracked.join(','));
+  if (LIVE) check(`[${tag}] tracking sent view, grupo, evaluar, csv, preventa_abrir`, ['view', 'grupo', 'evaluar', 'csv', 'preventa_abrir'].every(e => tracked.includes(e)), tracked.join(','));
   await ctx.close();
 }
 await browser.close();
