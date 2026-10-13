@@ -141,9 +141,9 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   check(`[${tag}] wrong NIT check digit is refused`, /dígito de verificación/.test(await txt(p, '#pv-err')));
   await p.fill('#pv-dv', '8');
   await p.locator('#preventa').screenshot({ path: join(OUT, `${tag}-5-preventa.png`) });
-  const resp = p.waitForResponse(r => r.url().includes('script.google') || r.url().includes('googleusercontent'), { timeout: 20000 }).catch(() => null);
+  // Wait for the submit round-trip to finish (button back from "Enviando…"); Apps Script often takes > 3 s.
   await p.click('#preventa button[type=submit]');
-  await resp; await p.waitForTimeout(2500);
+  await p.waitForFunction(() => !document.querySelector('#preventa button[type=submit]').disabled, null, { timeout: 30000 }).catch(() => {});
   const okShown = await p.locator('#pv-ok').isVisible();
   const fallback = await p.locator('#pv-err a[href^="mailto:octave@vread.fr"]').count();
   check(`[${tag}] pre-order saved in the Sheet`, okShown ? true : null, okShown ? '' : 'backend not authorized yet');
