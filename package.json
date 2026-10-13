@@ -1,1 +1,1 @@
-{"type":"module","private":true,"name":"puntal-sst","scripts":{"build":"python3 -I scripts/build-data.py","test":"node --test test/engine.test.mjs test/mesure.test.mjs"}}
+{"type":"module","private":true,"name":"puntal-sst","scripts":{"build":"python3 -I scripts/build-data.py","test":"node --test test/engine.test.mjs test/mesure.test.mjs test/site.test.mjs && node test/cro.check.mjs docs/assets/cro.js && node test/cro-gas.check.mjs gas/src/Cro.js"}}

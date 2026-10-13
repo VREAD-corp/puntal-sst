@@ -10,15 +10,11 @@
   var trackOnce = function (e) { if (!tracked[e]) { tracked[e] = 1; track(e); } };
 
   /* ---------- Variante de precio (prueba A/B de la evaluación: COP 149.000 vs 249.000 al año) ---------- */
+  // La sortea cro.js (assets/xp.js: una vez por pestaña, ?precio=a|b la fuerza). Si cro.js no cargó, sorteo sin guardar nada.
   var PRICES = { a149: 149000, b249: 249000 };
-  var variant = null;
-  var forced = new URLSearchParams(location.search).get('precio');
-  if (forced === 'a' || forced === 'b') variant = forced === 'a' ? 'a149' : 'b249';
-  if (!variant) { try { variant = localStorage.getItem('puntal_v'); } catch (x) { variant = null; } }
-  if (!PRICES[variant]) {
-    variant = Math.random() < 0.5 ? 'a149' : 'b249';
-    try { localStorage.setItem('puntal_v', variant); } catch (x) { /* modo privado */ }
-  }
+  var variant = window.octaveCro && window.octaveCro.v('price');
+  if (!PRICES[variant]) variant = Math.random() < 0.5 ? 'a149' : 'b249';
+  try { localStorage.removeItem('puntal_v'); } catch (x) { /* antes se guardaba por navegador */ }
   window.PUNTAL_VARIANT = variant;
   var cop = function (n) { return 'COP ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
 
@@ -95,7 +91,7 @@
     h += '</div><div class="yn" role="radiogroup" aria-label="' + esc(it.title) + '">' +
       '<label><input type="radio" name="r-' + esc(it.code) + '" value="si"' + (a === 'si' ? ' checked' : '') + '><span>Cumple</span></label>' +
       '<label><input type="radio" name="r-' + esc(it.code) + '" value="no"' + (a === 'no' ? ' checked' : '') + '><span>No cumple</span></label></div>';
-    if (it.verificacion) h += '<details><summary>Modo de verificación</summary><p>' + esc(it.verificacion) + '</p></details>';
+    if (it.verificacion) h += '<details data-faq="verificacion"><summary>Modo de verificación</summary><p>' + esc(it.verificacion) + '</p></details>';
     return h + '</div>';
   }
 
@@ -317,6 +313,7 @@
       if (j && j.ok) {
         ok.textContent = j.already ? 'Ya teníamos su reserva para este NIT. No hace falta enviarla otra vez.' : 'Reserva guardada. Le escribiremos a ' + data.email + ' cuando el producto esté listo. No se cobró nada.';
         ok.hidden = false; pv.reset(); syncPerfil();
+        if (window.octaveCro) window.octaveCro.goal(data.oferta === 'kit' ? 'preorder' : 'waitlist');
       } else if (j && j.error && ERRORS[j.error]) fail(j.error);
       else throw new Error('backend');
     }).catch(function () {

@@ -50,12 +50,13 @@ const txt = async (p, sel) => (await p.locator(sel).innerText()).trim();
 const browser = await chromium.launch({ headless: true });
 for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 500, hasTouch: w < 500, locale: 'es-CO', acceptDownloads: true });
-  // Our runs never count as visits: octave_notrack=1 sends their hits to the excluded counters (reason notrack).
-  await ctx.addInitScript(() => localStorage.setItem('octave_notrack', '1'));
+  // Our runs never count as visits: octave_notrack=1 (URL and remembered) sends mesure.js hits to the excluded counters
+  // (reason notrack) and stops cro.js entirely. puntal_v is the old per-browser draw: it must be ignored and removed.
+  await ctx.addInitScript(() => { localStorage.setItem('octave_notrack', '1'); if (location.search.includes('legacy')) localStorage.setItem('puntal_v', 'b249'); });
   const p = await ctx.newPage();
   const errors = []; p.on('pageerror', e => errors.push(String(e)));
   const tracked = [], flags = new Set(); p.on('request', r => { if (r.url().includes('action=track')) { try { const b = JSON.parse(r.postData() || '{}'); tracked.push(b.event); flags.add(`${b.excluded}/v${b.v}`); } catch { /* */ } } });
-  await p.goto(BASE + '?precio=a', { waitUntil: 'networkidle' });
+  await p.goto(BASE + '?precio=a&octave_notrack=1&legacy', { waitUntil: 'networkidle' });
 
   check(`[${tag}] title`, /Autoevaluación de estándares mínimos SG-SST/.test(await p.title()));
   check(`[${tag}] no horizontal scroll`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -63,6 +64,10 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   check(`[${tag}] footer: READ FRANCE SAS, SIREN, contact, Ley 1581, terms, disclaimer`,
     /READ FRANCE SAS/.test(foot) && /988 741 773/.test(foot) && /octave@vread\.fr/.test(foot) && /Ley 1581 de 2012/.test(foot) && /Términos de uso/.test(foot) && /no sustituye el diseño del SG-SST/.test(foot));
   check(`[${tag}] price variant A shows COP 149.000`, (await txt(p, '#precio-kit')) === 'COP 149.000');
+  const xpA = await p.evaluate(() => ({ cro: !!document.querySelector('script[src="assets/cro.js"][data-site="puntal-sst"]') && typeof window.octaveCro === 'object',
+    v: window.octaveCro && octaveCro.v('price'), attr: document.documentElement.dataset.xpPrice, pv: window.PUNTAL_VARIANT, tab: sessionStorage.getItem('oxp_price'), old: localStorage.getItem('puntal_v') }));
+  check(`[${tag}] cro.js loaded; ?precio=a -> a149 for the tab; old localStorage draw ignored and removed`,
+    xpA.cro && xpA.v === 'a149' && xpA.attr === 'a149' && xpA.pv === 'a149' && xpA.tab === 'a149' && xpA.old === null, JSON.stringify(xpA));
   await p.screenshot({ path: join(OUT, `${tag}-1-top.png`) });
 
   // ---- Selection (arts. 3, 7, 8, 9, 15, 16) ----
@@ -149,6 +154,14 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   check(`[${tag}] pre-order saved in the Sheet`, okShown ? true : null, okShown ? '' : 'backend not authorized yet');
   check(`[${tag}] pre-order: success or e-mail fallback, never a silent failure`, okShown || fallback === 1);
 
+  // ---- Forced variant B in a new tab: price COP 249.000 everywhere it is shown ----
+  const pb = await ctx.newPage(); pb.on('pageerror', e => errors.push(String(e)));
+  await pb.goto(BASE + '?precio=b&octave_notrack=1', { waitUntil: 'networkidle' });
+  const xpB = await pb.evaluate(() => ({ v: octaveCro.v('price'), attr: document.documentElement.dataset.xpPrice, pv: window.PUNTAL_VARIANT,
+    kit: document.querySelector('#precio-kit').textContent, kit2: [...document.querySelectorAll('.precio-kit-2')].map(e => e.textContent) }));
+  check(`[${tag}] ?precio=b -> b249 shows COP 249.000`, xpB.v === 'b249' && xpB.attr === 'b249' && xpB.pv === 'b249' && xpB.kit === 'COP 249.000' && xpB.kit2.length > 0 && xpB.kit2.every(t => t === 'COP 249.000'), JSON.stringify(xpB));
+  await pb.close();
+
   check(`[${tag}] no JS errors`, errors.length === 0, errors.join(' | '));
   if (LIVE) check(`[${tag}] tracking sent view, grupo, evaluar, csv, preventa_abrir`, ['view', 'grupo', 'evaluar', 'csv', 'preventa_abrir'].every(e => tracked.includes(e)), tracked.join(','));
   if (LIVE) check(`[${tag}] every test hit is flagged notrack (never a visit)`, [...flags].join() === 'notrack/v2', [...flags].join());
@@ -158,6 +171,7 @@ await browser.close();
 if (LIVE && API) {
   let s = null; try { s = JSON.parse(await (await fetch(API + '?action=stats')).text()); } catch { /* */ }
   check('backend stats (needs owner consent)', s && s.ok ? true : null, s ? JSON.stringify(s.preventa) : 'web app still asks for authorization');
+  if (s && s.ok) check('stats includes the cro summary', !!(s.cro && s.cro.ok && s.cro.sites), s.cro ? Object.keys(s.cro).join() : 'missing');
   if (s && s.ok) check('test hits land in the excluded counters (views counted vs raw)', (s.excluded['/ view a149 |notrack'] || 0) >= 2 && s.views.raw >= s.views.counted + 2, JSON.stringify(s.views));
 }
 const fail = results.filter(r => r.ok === false).length, pend = results.filter(r => r.ok === null).length;

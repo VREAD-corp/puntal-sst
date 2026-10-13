@@ -18,6 +18,8 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Puntal SST: autoevaluación de estándares mínimos","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"es-CO","isAccessibleForFree":true,"url":"https://outils.vread.fr/puntal-sst/","provider":{"@type":"Organization","name":"READ FRANCE SAS","address":{"@type":"PostalAddress","addressLocality":"París","addressCountry":"FR"},"email":"octave@vread.fr"}}</script>
+<script src="assets/xp.js" defer></script>
+<script src="assets/cro.js" defer data-site="puntal-sst" data-api="https://script.google.com/macros/s/AKfycbyr5CPMm54351x_oo3r92A5MfE0AfJGVtgzZNDXoKC2mbYCgMdsOiw1Mkbfeg4CB4uw/exec" data-hosts="outils.vread.fr vread-corp.github.io puntal-sst.github.io" data-cta="[data-oferta]"></script>
 <script src="assets/estandares.js" defer></script>
 <script src="assets/engine.js" defer></script>
 <script src="assets/app.js" defer></script>
@@ -41,7 +43,7 @@
 </header>
 
 <main id="main">
-<section class="hero">
+<section id="hero" class="hero">
   <div class="wrap hero-in">
     <div class="hero-copy">
       <p class="eyebrow">Resolución 0312 de 2019 · Ministerio del Trabajo</p>
@@ -67,7 +69,7 @@
         </div>
       </fieldset>
       <label class="check"><input id="f-upa" type="checkbox" name="upa"><span>Es una unidad de producción agropecuaria (finca, predio agrícola, pecuario, forestal, pesquero o acuícola)</span></label>
-      <details class="opt">
+      <details id="datos-informe" class="opt">
         <summary>Datos para el informe impreso (opcional)</summary>
         <label for="f-emp">Razón social</label>
         <input id="f-emp" name="empresa" autocomplete="organization" maxlength="120">
@@ -196,7 +198,7 @@
     <p>Leímos la Resolución 0312 de 2019 en la edición 50.872 del Diario Oficial (19 de febrero de 2019) y en la compilación jurídica del SENA. La tabla de valores del artículo 27 tiene 60 ítems, del 1.1.1 al 7.1.4, que suman 100. Cada ítem vale su máximo si se cumple y cero si no.</p>
     <p>Para las empresas de 7 y 21 estándares, el artículo 27 ordena dar el valor máximo, en la columna «No aplica», a los ítems de la tabla que no les corresponden. Así lo calculamos. El efecto es fuerte: los 7 estándares pesan 12,5 puntos, de modo que una empresa que no cumple ninguno queda en 87,5 y, con la escala del artículo 28, en «Aceptable». Los 21 estándares pesan 37,75 puntos. Por eso el resultado muestra primero cuántos estándares cumple: el artículo 23 obliga a cumplirlos todos.</p>
     <p>La resolución no publica qué ítem de la tabla corresponde a cada uno de los 7 o 21 estándares. Usamos el ítem del artículo 16 que lleva el mismo nombre. Revise esta correspondencia con su responsable del SG-SST:</p>
-    <details class="mapping"><summary>Ver la correspondencia de los 7 y los 21 estándares con la tabla</summary><div id="tabla-map"></div></details>
+    <details id="correspondencia" class="mapping"><summary>Ver la correspondencia de los 7 y los 21 estándares con la tabla</summary><div id="tabla-map"></div></details>
     <p>Valoración del artículo 28: menos de 60 % es crítico (plan de mejoramiento inmediato y reporte de avances a la ARL en máximo 3 meses); de 60 % a 85 %, moderadamente aceptable (reporte en máximo 6 meses); más de 85 %, aceptable (mantener la calificación y las evidencias, e incluir las mejoras en el plan anual).</p>
     <p class="small">Fuentes: <a href="https://normograma.sena.edu.co/compilacion/docs/resolucion_mtra_0312_2019.htm" rel="noopener">Resolución 0312 de 2019, compilación jurídica del SENA</a> · <a href="http://svrpubindc.imprenta.gov.co/diario/" rel="noopener">Diario Oficial, Imprenta Nacional, edición 50.872</a> (la tabla de valores está en la página 15) · <a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=72173" rel="noopener">Decreto 1072 de 2015, Función Pública</a>. Textos consultados el 13 de octubre de 2026. El sitio del Ministerio del Trabajo no respondió desde nuestra red ese día.</p>
   </div>

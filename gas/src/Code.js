@@ -12,8 +12,13 @@
  *  - preventa  B2B pre-order / waitlist for the document kit or the consultant licence: razón social,
  *              NIT (+ check digit), e-mail, offer, price shown, explicit Ley 1581 consent. One row per
  *              (NIT, offer) in `Preventa`. Nothing is charged.
- *  - stats     (GET) today's counters, excluded hits by reason, views counted vs raw, and the number of
- *              pre-order rows per offer. No personal data.
+ *              kind 'cro': the once-per-page behaviour batch of cro.js (Cro.js, vendored byte-identical from
+ *              octave-checkout): daily counters in `Comportement` and A/B results in `Experiences`.
+ *  - stats     (GET) today's counters, excluded hits by reason, views counted vs raw, the number of
+ *              pre-order rows per offer, and `cro` (today's behaviour and A/B summary). No personal data. Public.
+ *  - cro       aggregated behaviour + A/B summary over `days` (1-92) or from..to, for the weekly CRO report.
+ *              Key required (its SHA-256 is the Script Property CRO_KEY_SHA256, never in git).
+ *  - cro_init  (POST only) stores the SHA-256 of the CRO read key once (tools/cro-keys.mjs init).
  * Helpers end with "_" so they cannot be called through google.script.run.
  */
 
@@ -43,7 +48,13 @@ var RESPONSABLE_ = ['', 'si', 'no', 'buscando'];
 var RATE_TRACK_ = 300;
 var RATE_PV_ = 20;
 
-function doGet(e) { return route_((e && e.parameter) || {}); }
+// Behaviour counters and A/B results of cro.js (src/Cro.js, canonical copy in octave-checkout: do not edit here).
+var CRO_SITES_ = [SITE_];
+var CRO_EXPERIMENTS_ = { price: ['a149', 'b249'] }; // docs/assets/xp.js (same labels as Stats.variant and VARIANTS_)
+var CRO_TZ_ = 'America/Bogota';              // same day as the Stats date column (day_)
+function croBook_() { return SpreadsheetApp.getActiveSpreadsheet(); }
+
+function doGet(e) { return route_((e && e.parameter) || {}, false); }
 
 function doPost(e) {
   var raw = e && e.postData && e.postData.contents;
@@ -54,15 +65,17 @@ function doPost(e) {
   }
   var params = (e && e.parameter) || {};
   if (!body.action && params.action) body.action = params.action;
-  return route_(body);
+  return route_(body, true);
 }
 
-function route_(req) {
+function route_(req, post) {
   try {
     switch (String(req.action || '')) {
-      case 'track': return json_(track_(req));
+      case 'track': return json_(req.kind === 'cro' ? croTrack_(req) : track_(req));
       case 'preventa': return json_(preventa_(req));
       case 'stats': return json_(stats_());
+      case 'cro': return json_(croAction_(req));
+      case 'cro_init': return json_(post ? croInit_(req) : { ok: false, error: 'method_not_allowed' });
       default: return json_({ ok: false, error: 'unknown_action' });
     }
   } catch (err) {
@@ -263,7 +276,8 @@ function stats_() {
   var byOffer = { kit: 0, consultor: 0 };
   var pl = pv.getLastRow();
   if (pl > 1) pv.getRange(2, 2, pl - 1, 1).getValues().forEach(function (r) { var o = cell_(r[0]); if (byOffer[o] !== undefined) byOffer[o]++; });
-  return { ok: true, day: date, counters: out, excluded: excluded, views: views, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_) };
+  return { ok: true, day: date, counters: out, excluded: excluded, views: views, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_),
+    cro: croSummary_(date, date) };
 }
 
 /** Run once from the editor (or let the first request do it): creates both tabs with headers. */
