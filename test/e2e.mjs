@@ -50,9 +50,11 @@ const txt = async (p, sel) => (await p.locator(sel).innerText()).trim();
 const browser = await chromium.launch({ headless: true });
 for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 500, hasTouch: w < 500, locale: 'es-CO', acceptDownloads: true });
+  // Our runs never count as visits: octave_notrack=1 sends their hits to the excluded counters (reason notrack).
+  await ctx.addInitScript(() => localStorage.setItem('octave_notrack', '1'));
   const p = await ctx.newPage();
   const errors = []; p.on('pageerror', e => errors.push(String(e)));
-  const tracked = []; p.on('request', r => { if (r.url().includes('action=track')) { try { tracked.push(JSON.parse(r.postData() || '{}').event); } catch { /* */ } } });
+  const tracked = [], flags = new Set(); p.on('request', r => { if (r.url().includes('action=track')) { try { const b = JSON.parse(r.postData() || '{}'); tracked.push(b.event); flags.add(`${b.excluded}/v${b.v}`); } catch { /* */ } } });
   await p.goto(BASE + '?precio=a', { waitUntil: 'networkidle' });
 
   check(`[${tag}] title`, /Autoevaluación de estándares mínimos SG-SST/.test(await p.title()));
@@ -149,12 +151,14 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
 
   check(`[${tag}] no JS errors`, errors.length === 0, errors.join(' | '));
   if (LIVE) check(`[${tag}] tracking sent view, grupo, evaluar, csv, preventa_abrir`, ['view', 'grupo', 'evaluar', 'csv', 'preventa_abrir'].every(e => tracked.includes(e)), tracked.join(','));
+  if (LIVE) check(`[${tag}] every test hit is flagged notrack (never a visit)`, [...flags].join() === 'notrack/v2', [...flags].join());
   await ctx.close();
 }
 await browser.close();
 if (LIVE && API) {
   let s = null; try { s = JSON.parse(await (await fetch(API + '?action=stats')).text()); } catch { /* */ }
   check('backend stats (needs owner consent)', s && s.ok ? true : null, s ? JSON.stringify(s.preventa) : 'web app still asks for authorization');
+  if (s && s.ok) check('test hits land in the excluded counters (views counted vs raw)', (s.excluded['/ view a149 |notrack'] || 0) >= 2 && s.views.raw >= s.views.counted + 2, JSON.stringify(s.views));
 }
 const fail = results.filter(r => r.ok === false).length, pend = results.filter(r => r.ok === null).length;
 console.log(`\n${results.length - fail - pend} pass, ${fail} fail, ${pend} pending. Screenshots: ${OUT}`);

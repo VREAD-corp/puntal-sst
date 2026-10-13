@@ -6,10 +6,14 @@
  * Actions (POST text/plain JSON, so no CORS preflight; GET works for track and stats):
  *  - track     cookieless anonymous counters (no IP, no user agent, no identifier), aggregated per day and
  *              per price variant into `Stats`, never one row per hit. Same approach as octave-checkout Track.js.
+ *              A hit flagged `excluded` by mesure.js (crawler or headless user agent, navigator.webdriver, our tests
+ *              with octave_notrack=1) or sent without `v` (a stale cached snippet: 'legacy') goes to `Exclus` by
+ *              reason instead, so stats shows counted and raw views side by side.
  *  - preventa  B2B pre-order / waitlist for the document kit or the consultant licence: razón social,
  *              NIT (+ check digit), e-mail, offer, price shown, explicit Ley 1581 consent. One row per
  *              (NIT, offer) in `Preventa`. Nothing is charged.
- *  - stats     (GET) today's counters and the number of pre-order rows per offer. No personal data.
+ *  - stats     (GET) today's counters, excluded hits by reason, views counted vs raw, and the number of
+ *              pre-order rows per offer. No personal data.
  * Helpers end with "_" so they cannot be called through google.script.run.
  */
 
@@ -22,6 +26,11 @@ var CONSULTOR_PRICE_ = 99000;
 var STATS_TAB_ = 'Stats';
 var STATS_HEADER_ = ['date', 'site', 'page', 'event', 'variant', 'source', 'medium', 'campaign', 'count', 'mobile', 'desktop', 'updated_at'];
 var STATS_KEYS_ = 8;
+var EXCL_TAB_ = 'Exclus';
+var EXCL_HEADER_ = ['date', 'site', 'page', 'event', 'variant', 'reason', 'count', 'mobile', 'desktop', 'updated_at'];
+var EXCL_KEYS_ = 6;
+// Why a hit is not a visit (decided in the browser; the user agent itself is never sent). 'legacy': no `v`.
+var EXCL_REASONS_ = ['webdriver', 'bot', 'notrack', 'legacy'];
 var PV_TAB_ = 'Preventa';
 var PV_HEADER_ = ['created_at', 'oferta', 'variant', 'precio_cop', 'razon_social', 'nit', 'dv', 'email', 'perfil', 'empresas', 'responsable_sst', 'consent_version', 'page', 'source'];
 var OWN_HOSTS_ = ['outils.vread.fr', 'vread-corp.github.io', 'puntal-sst.github.io'];
@@ -133,33 +142,39 @@ function track_(req) {
     date: day_(now_()), site: SITE_, page: page_(req.page), event: event, variant: variant_(req.variant), source: source_(req),
     medium: token_(req.utm_medium, 30), campaign: token_(req.utm_campaign, 50),
     device: req.device === 'mobile' || req.device === 'desktop' ? req.device : '',
+    reason: EXCL_REASONS_.indexOf(String(req.excluded || '')) >= 0 ? String(req.excluded) : (req.excluded ? 'bot' : (!req.v ? 'legacy' : '')),
   };
   if (!rateOk_('track', RATE_TRACK_)) return { ok: false, error: 'rate_limited' };
-  withLock_(function () { increment_(hit); });
+  withLock_(function () { if (hit.reason) incrementRow_(EXCL_TAB_, EXCL_HEADER_, EXCL_KEYS_, [hit.date, hit.site, hit.page, hit.event, hit.variant, hit.reason], hit.device); else increment_(hit); });
   return { ok: true };
 }
 
 /** Caller holds the lock. Increments the day's counter row for this key, or appends it. */
 function increment_(h) {
-  var sh = tab_(STATS_TAB_, STATS_HEADER_);
-  var key = [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign].join('\u001f');
+  incrementRow_(STATS_TAB_, STATS_HEADER_, STATS_KEYS_, [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign], h.device);
+}
+
+/** Caller holds the lock. Increments the day's counter row `keys` (date first) of tab `name`, or appends it. */
+function incrementRow_(name, header, nKeys, keys, device) {
+  var sh = tab_(name, header);
+  var key = keys.join('\u001f');
   var last = sh.getLastRow();
   var row = 0;
   var n = Math.min(Math.max(last - 1, 0), 2000);
   if (n > 0) {
-    var vals = sh.getRange(last - n + 1, 1, n, STATS_KEYS_).getValues();
+    var vals = sh.getRange(last - n + 1, 1, n, nKeys).getValues();
     for (var i = vals.length - 1; i >= 0; i--) {
-      if (cell_(vals[i][0]) < h.date) break;
+      if (cell_(vals[i][0]) < keys[0]) break;
       if (vals[i].map(cell_).join('\u001f') === key) { row = last - n + 1 + i; break; }
     }
   }
   if (!row) {
-    sh.appendRow([txt_(h.date), h.site, txt_(h.page), h.event, h.variant, txt_(h.source), txt_(h.medium), txt_(h.campaign), 1,
-      h.device === 'mobile' ? 1 : 0, h.device === 'desktop' ? 1 : 0, now_().toISOString()]);
+    sh.appendRow(keys.map(txt_).concat([1,
+      device === 'mobile' ? 1 : 0, device === 'desktop' ? 1 : 0, now_().toISOString()]));
   } else {
-    var c = sh.getRange(row, STATS_KEYS_ + 1, 1, 3).getValues()[0];
-    sh.getRange(row, STATS_KEYS_ + 1, 1, 4).setValues([[Number(c[0] || 0) + 1,
-      Number(c[1] || 0) + (h.device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (h.device === 'desktop' ? 1 : 0), now_().toISOString()]]);
+    var c = sh.getRange(row, nKeys + 1, 1, 3).getValues()[0];
+    sh.getRange(row, nKeys + 1, 1, 4).setValues([[Number(c[0] || 0) + 1,
+      Number(c[1] || 0) + (device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (device === 'desktop' ? 1 : 0), now_().toISOString()]]);
   }
 }
 
@@ -231,17 +246,31 @@ function stats_() {
       out[k] = (out[k] || 0) + Number(vals[i][8] || 0);
     }
   }
+  var views = { counted: 0, excluded: 0, raw: 0 };
+  Object.keys(out).forEach(function (k) { if (k.split(' ')[1] === 'view') views.counted += out[k]; });
+  var excluded = {};
+  var ex = tab_(EXCL_TAB_, EXCL_HEADER_);
+  var el = ex.getLastRow();
+  var m = Math.min(Math.max(el - 1, 0), 5000);
+  if (m > 0) ex.getRange(el - m + 1, 1, m, EXCL_HEADER_.length).getValues().forEach(function (r) {
+    if (cell_(r[0]) !== date) return;
+    var k = cell_(r[2]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '') + ' |' + r[5];
+    excluded[k] = (excluded[k] || 0) + Number(r[6] || 0);
+    if (r[3] === 'view') views.excluded += Number(r[6] || 0);
+  });
+  views.raw = views.counted + views.excluded;
   var pv = tab_(PV_TAB_, PV_HEADER_);
   var byOffer = { kit: 0, consultor: 0 };
   var pl = pv.getLastRow();
   if (pl > 1) pv.getRange(2, 2, pl - 1, 1).getValues().forEach(function (r) { var o = cell_(r[0]); if (byOffer[o] !== undefined) byOffer[o]++; });
-  return { ok: true, day: date, counters: out, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_) };
+  return { ok: true, day: date, counters: out, excluded: excluded, views: views, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_) };
 }
 
 /** Run once from the editor (or let the first request do it): creates both tabs with headers. */
 function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   tab_(STATS_TAB_, STATS_HEADER_);
+  tab_(EXCL_TAB_, EXCL_HEADER_);
   tab_(PV_TAB_, PV_HEADER_);
   ['Sheet1', 'Hoja 1', 'Página1', 'Feuille 1'].forEach(function (n) {
     var s = ss.getSheetByName(n);
