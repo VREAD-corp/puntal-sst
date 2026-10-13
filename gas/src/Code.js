@@ -14,8 +14,8 @@
  *              (NIT, offer) in `Preventa`. Nothing is charged.
  *              kind 'cro': the once-per-page behaviour batch of cro.js (Cro.js, vendored byte-identical from
  *              octave-checkout): daily counters in `Comportement` and A/B results in `Experiences`.
- *  - stats     (GET) today's counters, excluded hits by reason, views counted vs raw, the number of
- *              pre-order rows per offer, and `cro` (today's behaviour and A/B summary). No personal data. Public.
+ *  - stats     (GET) today's counters, excluded hits by reason, views counted vs raw, and the number of
+ *              pre-order rows per offer. No personal data. Public, so no CRO summary here: that is `cro` (key).
  *  - cro       aggregated behaviour + A/B summary over `days` (1-92) or from..to, for the weekly CRO report.
  *              Key required (its SHA-256 is the Script Property CRO_KEY_SHA256, never in git).
  *  - cro_init  (POST only) stores the SHA-256 of the CRO read key once (tools/cro-keys.mjs init).
@@ -276,8 +276,7 @@ function stats_() {
   var byOffer = { kit: 0, consultor: 0 };
   var pl = pv.getLastRow();
   if (pl > 1) pv.getRange(2, 2, pl - 1, 1).getValues().forEach(function (r) { var o = cell_(r[0]); if (byOffer[o] !== undefined) byOffer[o]++; });
-  return { ok: true, day: date, counters: out, excluded: excluded, views: views, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_),
-    cro: croSummary_(date, date) };
+  return { ok: true, day: date, counters: out, excluded: excluded, views: views, preventa: byOffer, events: EVENTS_.concat(SERVER_EVENTS_) };
 }
 
 /** Run once from the editor (or let the first request do it): creates both tabs with headers. */

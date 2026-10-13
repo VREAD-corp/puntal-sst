@@ -85,6 +85,7 @@ test('backend: cro batches, cro and cro_init are routed; experiments whitelist m
   assert.deepEqual(post({ action: 'track', kind: 'cro', v: 2, site: 'nope', page: '/', e: [['pv', '', '']] }), { ok: false, error: 'bad_request' });
   assert.deepEqual(ctx.doGet({ parameter: { action: 'cro_init', key: 'x'.repeat(40) } }), { ok: false, error: 'method_not_allowed' });
   assert.deepEqual(post({ action: 'cro', key: 'nope' }), { ok: false, error: 'forbidden' });
+  assert.ok(!/croSummary_/.test(ctx.stats_.toString()), 'public stats must not include the key-protected cro summary');
   const XP = ((w) => { vm.runInNewContext(read('docs/assets/xp.js'), { window: w }); return w.OCTAVE_XP; })({});
   assert.deepEqual(JSON.parse(JSON.stringify(ctx.CRO_EXPERIMENTS_)), JSON.parse(JSON.stringify(Object.fromEntries(XP.map((x) => [x.id, x.variants])))));
   const b = ctx.croValidate_({ site: 'puntal-sst', v: 2, page: '/puntal-sst/index.html', e: [['xp', 'price', 'b249.n'], ['xp', 'price', 'a149.preorder'], ['xp', 'price', 'a149.waitlist'], ['xp', 'price', 'b.n']] });

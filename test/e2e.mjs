@@ -171,7 +171,7 @@ await browser.close();
 if (LIVE && API) {
   let s = null; try { s = JSON.parse(await (await fetch(API + '?action=stats')).text()); } catch { /* */ }
   check('backend stats (needs owner consent)', s && s.ok ? true : null, s ? JSON.stringify(s.preventa) : 'web app still asks for authorization');
-  if (s && s.ok) check('stats includes the cro summary', !!(s.cro && s.cro.ok && s.cro.sites), s.cro ? Object.keys(s.cro).join() : 'missing');
+  if (s && s.ok) check('public stats does not expose the cro summary (key-protected action=cro only)', !('cro' in s), Object.keys(s).join());
   if (s && s.ok) check('test hits land in the excluded counters (views counted vs raw)', (s.excluded['/ view a149 |notrack'] || 0) >= 2 && s.views.raw >= s.views.counted + 2, JSON.stringify(s.views));
 }
 const fail = results.filter(r => r.ok === false).length, pend = results.filter(r => r.ok === null).length;
