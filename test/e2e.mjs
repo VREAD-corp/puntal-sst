@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const { chromium } = await import(process.env.PLAYWRIGHT_CORE || '/home/vincent/clients/v-read/dev/octave-checkout/node_modules/playwright-core/index.mjs');
-const BASE = process.argv[2] || 'https://outils.vread.fr/puntal-sst/';
+const BASE = process.argv[2] || 'https://puntal.jalonel.com/';
 const OUT = process.argv[3] || join(tmpdir(), 'puntal-e2e');
 mkdirSync(OUT, { recursive: true });
 const LIVE = !/127\.0\.0\.1|localhost/.test(BASE);
@@ -63,6 +63,8 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   const foot = await txt(p, 'footer');
   check(`[${tag}] footer: READ FRANCE SAS, SIREN, contact, Ley 1581, terms, disclaimer`,
     /READ FRANCE SAS/.test(foot) && /988 741 773/.test(foot) && /octave@vread\.fr/.test(foot) && /Ley 1581 de 2012/.test(foot) && /Términos de uso/.test(foot) && /no sustituye el diseño del SG-SST/.test(foot));
+  check(`[${tag}] footer: Una marca de Jalonel -> https://jalonel.com/en/`, /Una marca de Jalonel/.test(foot) && await p.locator('footer a[href="https://jalonel.com/en/"]').count() > 0);
+  if (LIVE) check(`[${tag}] canonical is the page URL`, (await p.locator('link[rel=canonical]').getAttribute('href')) === BASE);
   check(`[${tag}] price variant A shows COP 149.000`, (await txt(p, '#precio-kit')) === 'COP 149.000');
   const xpA = await p.evaluate(() => ({ cro: !!document.querySelector('script[src="assets/cro.js"][data-site="puntal-sst"]') && typeof window.octaveCro === 'object',
     v: window.octaveCro && octaveCro.v('price'), attr: document.documentElement.dataset.xpPrice, pv: window.PUNTAL_VARIANT, tab: sessionStorage.getItem('oxp_price'), old: localStorage.getItem('puntal_v') }));

@@ -20,20 +20,20 @@ test('every page loads xp.js then cro.js (classic, same backend and hosts as mes
     assert.ok(!/type="module"/.test(cro.tag), f + ': classic script');
     assert.match(cro.tag, /data-site="puntal-sst"/);
     assert.ok(cro.tag.includes(`data-api="${API}"`), f + ': same backend as mesure.js');
-    assert.match(cro.tag, /data-hosts="outils\.vread\.fr vread-corp\.github\.io puntal-sst\.github\.io"/);
+    assert.match(cro.tag, /data-hosts="puntal\.jalonel\.com outils\.vread\.fr"/);
     assert.match(cro.tag, /data-cta="\[data-oferta\]"/);
     assert.ok(at(/^assets\/xp\.js$/) >= 0 && at(/^assets\/xp\.js$/) < at(/^assets\/cro\.js$/), f + ': OCTAVE_XP before cro.js');
     for (const later of [/app\.js$/, /mesure\.js/]) if (at(later) >= 0) assert.ok(at(/^assets\/cro\.js$/) < at(later), f + ': cro.js before ' + later);
   }
 });
 
-function browser({ search = '', path = '/puntal-sst/', session = {}, local = { octave_notrack: '1' } } = {}) {
+function browser({ search = '', path = '/', session = {}, local = { octave_notrack: '1' } } = {}) {
   const store = (o) => ({ getItem: (k) => (k in o ? o[k] : null), setItem: (k, v) => { o[k] = String(v); }, removeItem: (k) => { delete o[k]; } });
   const attrs = {}, sent = [];
   const ctx = {
-    document: { currentScript: { dataset: { site: 'puntal-sst', api: API, hosts: 'outils.vread.fr' } }, readyState: 'complete', visibilityState: 'visible',
+    document: { currentScript: { dataset: { site: 'puntal-sst', api: API, hosts: 'puntal.jalonel.com' } }, readyState: 'complete', visibilityState: 'visible',
       documentElement: { setAttribute: (k, v) => { attrs[k] = v; } }, querySelectorAll: () => [], addEventListener() {} },
-    navigator: { userAgent: 'Mozilla/5.0 Chrome/141.0.0.0', webdriver: false }, location: { search, pathname: path, hostname: 'outils.vread.fr' },
+    navigator: { userAgent: 'Mozilla/5.0 Chrome/141.0.0.0', webdriver: false }, location: { search, pathname: path, hostname: 'puntal.jalonel.com' },
     sessionStorage: store(session), localStorage: store(local), innerWidth: 1200, addEventListener() {}, URLSearchParams,
     fetch: (u, o) => { sent.push(o); return Promise.resolve(); },
   };

@@ -8,7 +8,7 @@ const src = fs.readFileSync(new URL('../docs/assets/mesure.js', import.meta.url)
 const CHROME = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
 const GOOGLEBOT = 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.7390.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 
-function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '', host = 'outils.vread.fr' } = {}) {
+function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '', host = 'puntal.jalonel.com' } = {}) {
   const sent = [], listeners = {};
   const doc = {
     referrer: 'https://www.google.com/', prerendering, visibilityState: visibility, 
@@ -17,7 +17,7 @@ function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerende
   const ls = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } };
   const ctx = {
     navigator: { userAgent: ua, webdriver, doNotTrack: dnt }, document: doc, localStorage: ls, innerWidth: 1200, URLSearchParams, JSON, Date, String,
-    location: { hostname: host, pathname: '/puntal-sst/', search },
+    location: { hostname: host, pathname: '/', search },
     fetch: (u, o) => { sent.push(JSON.parse(o.body)); assert.equal(o.credentials, 'omit'); return Promise.resolve(); },
   };
   ctx.window = ctx;
@@ -63,4 +63,10 @@ test('prerendered pages count only once activated or shown', () => {
   assert.equal(r.sent.length, 0);
   r.doc.visibilityState = 'visible'; r.fire('visibilitychange'); r.fire('visibilitychange');
   assert.equal(r.sent.filter((b) => b.event === 'view').length, 1);
+});
+
+test('counted on puntal.jalonel.com and still on outils.vread.fr, nowhere else', () => {
+  assert.equal(run({ host: 'puntal.jalonel.com' }).sent.length, 1);
+  assert.equal(run({ host: 'outils.vread.fr' }).sent.length, 1);
+  assert.equal(run({ host: 'example.com' }).sent.length, 0);
 });
