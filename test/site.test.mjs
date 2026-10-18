@@ -9,6 +9,13 @@ const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8')
 const API = read('docs/assets/mesure.js').match(/https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec/)[0];
 const PAGES = fs.readdirSync(new URL('../docs/', import.meta.url)).filter((f) => f.endsWith('.html') && !/^google[0-9a-f]+\.html$/.test(f));
 
+test('served files (docs/) carry no reference to the reading sites, their address or the GitHub repo', () => {
+  const walk = (d) => fs.readdirSync(new URL('../' + d, import.meta.url), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(d + e.name + '/') : [d + e.name]);
+  const files = walk('docs/').filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f));
+  assert.ok(files.includes('docs/index.html') && files.includes('docs/assets/cro.js'), files.join());
+  for (const f of files) assert.doesNotMatch(read(f), /vread|github\.com\/VREAD|c[oó]digo fuente/i, f);
+});
+
 test('every page loads xp.js then cro.js (classic, same backend and hosts as mesure.js) before the site scripts', () => {
   assert.ok(PAGES.includes('index.html') && PAGES.length >= 3, PAGES.join());
   for (const f of PAGES) {
@@ -20,7 +27,7 @@ test('every page loads xp.js then cro.js (classic, same backend and hosts as mes
     assert.ok(!/type="module"/.test(cro.tag), f + ': classic script');
     assert.match(cro.tag, /data-site="puntal-sst"/);
     assert.ok(cro.tag.includes(`data-api="${API}"`), f + ': same backend as mesure.js');
-    assert.match(cro.tag, /data-hosts="puntal\.jalonel\.com outils\.vread\.fr"/);
+    assert.match(cro.tag, /data-hosts="puntal\.jalonel\.com"/);
     assert.match(cro.tag, /data-cta="\[data-oferta\]"/);
     assert.ok(at(/^assets\/xp\.js$/) >= 0 && at(/^assets\/xp\.js$/) < at(/^assets\/cro\.js$/), f + ': OCTAVE_XP before cro.js');
     for (const later of [/app\.js$/, /mesure\.js/]) if (at(later) >= 0) assert.ok(at(/^assets\/cro\.js$/) < at(later), f + ': cro.js before ' + later);

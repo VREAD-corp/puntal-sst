@@ -65,8 +65,8 @@ test('prerendered pages count only once activated or shown', () => {
   assert.equal(r.sent.filter((b) => b.event === 'view').length, 1);
 });
 
-test('counted on puntal.jalonel.com and still on outils.vread.fr, nowhere else', () => {
+test('counted on puntal.jalonel.com only', () => {
   assert.equal(run({ host: 'puntal.jalonel.com' }).sent.length, 1);
-  assert.equal(run({ host: 'outils.vread.fr' }).sent.length, 1);
+  assert.equal(run({ host: 'jalonel.com' }).sent.length, 0);
   assert.equal(run({ host: 'example.com' }).sent.length, 0);
 });

@@ -226,7 +226,7 @@
       h += '</tbody></table>';
     }
     h += '<div class="firmas"><div>Firma del empleador o contratante</div><div>Firma del responsable de la ejecución del SG-SST</div></div>';
-    h += '<p class="pie">Elaborado con Puntal SST (READ FRANCE SAS, octave@vread.fr), herramienta de apoyo sin vínculo con el Ministerio del Trabajo ni las ARL. Fuente: Resolución 0312 de 2019, arts. 3, 7, 9, 16, 27 y 28; tabla de valores del Diario Oficial No. 50.872. No sustituye el diseño del SG-SST por una persona con licencia en SST.</p>';
+    h += '<p class="pie">Elaborado con Puntal SST (READ FRANCE SAS, contact@jalonel.com), herramienta de apoyo sin vínculo con el Ministerio del Trabajo ni las ARL. Fuente: Resolución 0312 de 2019, arts. 3, 7, 9, 16, 27 y 28; tabla de valores del Diario Oficial No. 50.872. No sustituye el diseño del SG-SST por una persona con licencia en SST.</p>';
     $('#informe').innerHTML = h;
   }
   window.addEventListener('beforeprint', function () { if (current) buildReport(); });
@@ -304,7 +304,7 @@
     if (!/^[^\s@<>()",;:]{1,64}@[A-Za-z0-9.-]{1,253}\.[A-Za-z]{2,}$/.test(data.email)) return fail('bad_email');
     if (!data.consent) return fail('consent_required');
     var btn = $('button[type=submit]', pv); btn.disabled = true; btn.textContent = 'Enviando…';
-    var mailto = 'mailto:octave@vread.fr?subject=' + encodeURIComponent('Preventa Puntal SST: ' + data.oferta) + '&body=' +
+    var mailto = 'mailto:contact@jalonel.com?subject=' + encodeURIComponent('Preventa Puntal SST: ' + data.oferta) + '&body=' +
       encodeURIComponent('Razón social: ' + data.razon_social + '\nNIT: ' + data.nit + '-' + data.dv + '\nCorreo: ' + data.email + '\nOferta: ' + data.oferta + ' (' + (data.oferta === 'kit' ? price + ' al año' : 'COP 99.000 al mes') + ')\nAutorizo el tratamiento de estos datos según la política de Puntal SST (Ley 1581 de 2012).');
     fetch(window.PUNTAL_API || 'https://script.google.com/macros/s/AKfycbyr5CPMm54351x_oo3r92A5MfE0AfJGVtgzZNDXoKC2mbYCgMdsOiw1Mkbfeg4CB4uw/exec', {
       method: 'POST', credentials: 'omit', body: JSON.stringify(data),
@@ -317,7 +317,7 @@
       } else if (j && j.error && ERRORS[j.error]) fail(j.error);
       else throw new Error('backend');
     }).catch(function () {
-      err.innerHTML = 'No pudimos guardar la reserva desde esta página. Puede enviarla por correo: <a href="' + esc(mailto) + '">escribir a octave@vread.fr con sus datos</a>.';
+      err.innerHTML = 'No pudimos guardar la reserva desde esta página. Puede enviarla por correo: <a href="' + esc(mailto) + '">escribir a contact@jalonel.com con sus datos</a>.';
       err.hidden = false; track('preventa_error');
     }).then(function () { btn.disabled = false; btn.textContent = 'Enviar reserva'; });
   });

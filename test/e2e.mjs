@@ -62,7 +62,7 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   check(`[${tag}] no horizontal scroll`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   const foot = await txt(p, 'footer');
   check(`[${tag}] footer: READ FRANCE SAS, SIREN, contact, Ley 1581, terms, disclaimer`,
-    /READ FRANCE SAS/.test(foot) && /988 741 773/.test(foot) && /octave@vread\.fr/.test(foot) && /Ley 1581 de 2012/.test(foot) && /Términos de uso/.test(foot) && /no sustituye el diseño del SG-SST/.test(foot));
+    /READ FRANCE SAS/.test(foot) && /988 741 773/.test(foot) && /contact@jalonel\.com/.test(foot) && /Ley 1581 de 2012/.test(foot) && /Términos de uso/.test(foot) && /no sustituye el diseño del SG-SST/.test(foot));
   check(`[${tag}] footer: Una marca de Jalonel -> https://jalonel.com/en/`, /Una marca de Jalonel/.test(foot) && await p.locator('footer a[href="https://jalonel.com/en/"]').count() > 0);
   if (LIVE) check(`[${tag}] canonical is the page URL`, (await p.locator('link[rel=canonical]').getAttribute('href')) === BASE);
   check(`[${tag}] price variant A shows COP 149.000`, (await txt(p, '#precio-kit')) === 'COP 149.000');
@@ -152,7 +152,7 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   await p.click('#preventa button[type=submit]');
   await p.waitForFunction(() => !document.querySelector('#preventa button[type=submit]').disabled, null, { timeout: 30000 }).catch(() => {});
   const okShown = await p.locator('#pv-ok').isVisible();
-  const fallback = await p.locator('#pv-err a[href^="mailto:octave@vread.fr"]').count();
+  const fallback = await p.locator('#pv-err a[href^="mailto:contact@jalonel.com"]').count();
   check(`[${tag}] pre-order saved in the Sheet`, okShown ? true : null, okShown ? '' : 'backend not authorized yet');
   check(`[${tag}] pre-order: success or e-mail fallback, never a silent failure`, okShown || fallback === 1);
 
