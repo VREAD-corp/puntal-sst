@@ -48,16 +48,14 @@
     <div class="hero-copy">
       <p class="eyebrow">Resolución 0312 de 2019 · Ministerio del Trabajo</p>
       <h1>Autoevaluación de estándares mínimos del SG‑SST, con la tabla de valores oficial</h1>
-      <p class="lead">Escriba cuántos trabajadores tiene la empresa y su clase de riesgo ante la ARL. La herramienta escoge el grupo que le aplica (7, 21 o 60 estándares), califica cada ítem con los valores del artículo 27 y arma el plan de mejoramiento que pide el artículo 28, listo para imprimir y firmar.</p>
-      <p class="who">Pensada para el responsable del SG-SST (técnico, tecnólogo o profesional con licencia) y para la empresa que trabaja con él. Gratis, sin registro. Los datos que escriba se quedan en su navegador.</p>
-      <p class="warn-inline">No reemplaza a la persona que diseña el SG-SST: los artículos 4, 10 y 17 exigen licencia vigente en SST y el curso virtual de 50 horas. <a href="#limites">Lo que Puntal SST no hace</a>.</p>
+      <p class="lead">Indique sus trabajadores y su clase de riesgo ante la ARL: verá qué estándares le aplican (7, 21 o 60) y su plan de mejoramiento.</p>
     </div>
 
     <form id="paso1" class="card step1" novalidate aria-labelledby="paso1-t">
       <h2 id="paso1-t"><span class="num">1</span> Datos de la empresa</h2>
       <label for="f-trab">Número de trabajadores</label>
       <input id="f-trab" name="trabajadores" type="number" inputmode="numeric" min="1" step="1" required placeholder="Ej.: 8">
-      <p class="hint">Cuente a todos: dependientes, independientes, cooperados, estudiantes y trabajadores en misión que prestan servicios en sus sedes (art. 23).</p>
+      <p class="hint">Todos los que prestan servicios en sus sedes: dependientes, independientes, cooperados, estudiantes y en misión (art. 23).</p>
       <fieldset>
         <legend>Clase de riesgo (afiliación a la ARL)</legend>
         <div class="seg" role="radiogroup">
@@ -68,7 +66,9 @@
           <label><input type="radio" name="riesgo" value="5"><span>V</span></label>
         </div>
       </fieldset>
-      <label class="check"><input id="f-upa" type="checkbox" name="upa"><span>Es una unidad de producción agropecuaria (finca, predio agrícola, pecuario, forestal, pesquero o acuícola)</span></label>
+      <label class="check"><input id="f-upa" type="checkbox" name="upa"><span>Unidad de producción agropecuaria (finca o predio agrícola, pecuario, forestal, pesquero o acuícola)</span></label>
+      <p class="err" id="paso1-err" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Ver qué estándares me aplican</button>
       <details id="datos-informe" class="opt">
         <summary>Datos para el informe impreso (opcional)</summary>
         <label for="f-emp">Razón social</label>
@@ -80,9 +80,12 @@
         <label for="f-fecha">Fecha de la autoevaluación</label>
         <input id="f-fecha" name="fecha" type="date">
       </details>
-      <p class="err" id="paso1-err" role="alert" hidden></p>
-      <button class="btn primary" type="submit">Ver qué estándares me aplican</button>
     </form>
+    <div class="hero-more">
+      <p>Escriba cuántos trabajadores tiene la empresa y su clase de riesgo ante la ARL. La herramienta escoge el grupo que le aplica (7, 21 o 60 estándares), califica cada ítem con los valores del artículo 27 y arma el plan de mejoramiento que pide el artículo 28, listo para imprimir y firmar.</p>
+      <p class="who">Pensada para el responsable del SG-SST (técnico, tecnólogo o profesional con licencia) y para la empresa que trabaja con él. Gratis, sin registro. Los datos que escriba se quedan en su navegador.</p>
+      <p class="warn-inline">No reemplaza a la persona que diseña el SG-SST: los artículos 4, 10 y 17 exigen licencia vigente en SST y el curso virtual de 50 horas. <a href="#limites">Lo que Puntal SST no hace</a>.</p>
+    </div>
   </div>
 </section>
 

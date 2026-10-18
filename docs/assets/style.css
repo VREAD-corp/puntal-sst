@@ -180,3 +180,8 @@ caption { text-align: left; font-weight: 600; padding: 6px 0; }
   .plan td:last-child { border-bottom: 0; }
   .plan td[data-label]::before { content: attr(data-label); display: block; font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
 }
+
+/* 2026-10-19: the form comes right after the title on mobile; the rest of the intro follows it. */
+@media (min-width: 861px) { .hero-in .step1 { grid-column: 2; grid-row: 1 / span 2; } .hero-more { grid-column: 1; grid-row: 2; } }
+.hero-more > p:first-child { margin-top: 0; }
+@media (max-width: 860px) { .hero { padding-top: 16px; } .hero h1 { margin-top: .2em; } .hero .lead { font-size: 1rem; } .step1 .btn { margin-top: 12px; } .step1 #datos-informe { margin-top: 12px; } }
