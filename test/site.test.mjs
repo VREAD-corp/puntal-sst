@@ -100,3 +100,12 @@ test('backend: cro batches, cro and cro_init are routed; experiments whitelist m
   assert.equal(b.exp.length, 3);
   assert.equal(b.dropped, 1);
 });
+
+test('Apps Script: own host only, no reading-site mention, every e-mail (if any) replies to contact@jalonel.com', () => {
+  const code = read('gas/src/Code.js'), cro = read('gas/src/Cro.js');
+  assert.match(code, /var OWN_HOSTS_ = \['puntal\.jalonel\.com'\];/);
+  for (const s of [code, cro]) {
+    assert.doesNotMatch(s, /vread/i);
+    for (const call of s.match(/(MailApp|GmailApp)\.send\w*\([^;]*/g) || []) assert.match(call, /replyTo: *'contact@jalonel\.com'/, call);
+  }
+});
