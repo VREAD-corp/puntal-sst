@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Autoevaluación de estándares mínimos SG-SST (Res. 0312 de 2019) | Puntal SST</title>
 <meta name="description" content="Autoevaluación gratuita de estándares mínimos del SG-SST según la Resolución 0312 de 2019: escoge el grupo de 7, 21 o 60 estándares, califica con la tabla de valores del artículo 27 y arma el plan de mejoramiento para imprimir.">
+<meta name="robots" content="noindex">
 <link rel="canonical" href="https://puntal.jalonel.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_CO">
@@ -27,6 +28,7 @@
 </head>
 <body>
 <a class="skip" href="#herramienta">Ir a la autoevaluación</a>
+<div class="jal-pause" role="note"><p>Este servicio está en pausa. Otras herramientas: <a href="https://jalonel.com/en/">jalonel.com</a></p></div>
 <header class="top">
   <div class="wrap top-in">
     <a class="brand" href="./" aria-label="Puntal SST, inicio">
@@ -157,8 +159,10 @@
       </article>
     </div>
 
-    <form id="preventa" class="card preventa" hidden novalidate aria-labelledby="pv-t">
+    <form id="preventa" class="card preventa" hidden novalidate aria-labelledby="pv-t" data-paused="1">
       <h3 id="pv-t">Reserva sin pago</h3>
+      <p class="paused-note">Las nuevas solicitudes están cerradas durante la pausa.</p>
+      <fieldset class="paused-fs" disabled>
       <p class="small">No pedimos tarjeta. Cuando el kit esté listo le escribimos una sola vez con el enlace de pago y el precio que vio en esta página. Si no le interesa, no pasa nada.</p>
       <fieldset>
         <legend>Qué quiere reservar</legend>
@@ -190,6 +194,7 @@
       <label class="check consent"><input type="checkbox" id="pv-consent" required><span>Autorizo a READ FRANCE SAS a tratar estos datos para avisarme del lanzamiento del producto reservado, según la <a href="privacidad.html">política de tratamiento de datos</a> (Ley 1581 de 2012). Entiendo que se guardan en servidores de Google fuera de Colombia.</span></label>
       <p class="err" id="pv-err" role="alert" hidden></p>
       <button class="btn primary" type="submit">Enviar reserva</button>
+      </fieldset>
       <p class="ok" id="pv-ok" role="status" hidden></p>
     </form>
   </div>

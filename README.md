@@ -1,5 +1,7 @@
 # Puntal SST
 
+**Paused since 24/10/2026** (founders' decision, Jalonel refocus): noindex, banner, requests closed; tracking kept.
+
 A free self-assessment of the Colombian SG-SST minimum standards (Resolución 0312 de 2019): it picks the group of 7, 21 or 60 standards from the number of workers and the risk class, scores each item with the art. 27 table of values, applies the art. 28 rating, and builds a printable improvement plan (plus CSV). It also runs a pre-order test (fake door) for a document kit and a consultant licence. Brand Jalonel (https://jalonel.com/en/), operated by READ FRANCE SAS (Paris), built by Octave, the company's AI agent. Venture SA-CO-01 in `octave-global-ventures`. Spanish (Colombia), B2B only.
 
 - Live: https://puntal.jalonel.com/ (brand Jalonel, a brand of READ FRANCE SAS; GitHub Pages custom domain, `docs/CNAME`). The old URLs redirect there (301). `mesure.js`, `cro.js` (`data-hosts`) and the backend's `OWN_HOSTS_` accept only `puntal.jalonel.com`. Contact: contact@jalonel.com.

@@ -109,3 +109,15 @@ test('Apps Script: own host only, no reading-site mention, every e-mail (if any)
     for (const call of s.match(/(MailApp|GmailApp)\.send\w*\([^;]*/g) || []) assert.match(call, /replyTo: *'contact@jalonel\.com'/, call);
   }
 });
+
+test('paused since 2026-10-24: one robots tag (noindex) and the pause banner on every page, pre-order closed', () => {
+  for (const f of PAGES) {
+    const html = fs.readFileSync(new URL('../docs/' + f, import.meta.url), 'utf8');
+    assert.deepEqual(html.match(/<meta name="robots"[^>]*>/g), ['<meta name="robots" content="noindex">'], f);
+    assert.match(html, /<div class="jal-pause" role="note"><p>Este servicio está en pausa\./, f);
+  }
+  const idx = fs.readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8');
+  assert.match(idx, /<form id="preventa"[^>]*data-paused="1"/);
+  assert.match(idx, /<fieldset class="paused-fs" disabled>/);
+  assert.match(fs.readFileSync(new URL('../docs/assets/app.js', import.meta.url), 'utf8'), /if \(pv\.getAttribute\('data-paused'\)\) return;/);
+});

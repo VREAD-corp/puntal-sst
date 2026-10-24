@@ -140,21 +140,11 @@ for (const [w, h, tag] of [[390, 844, 'mobile'], [1440, 900, 'desktop']]) {
   // ---- Preventa (fake door) ----
   await p.click('[data-oferta="kit"]');
   await p.waitForSelector('#preventa:not([hidden])');
-  await p.fill('#pv-razon', 'E2E PRUEBA PUNTAL SAS');
-  await p.fill('#pv-nit', '890903938'); await p.fill('#pv-dv', '7');
-  await p.fill('#pv-email', `e2e-${tag}@puntal-sst.test`);
-  await p.check('#pv-consent');
-  await p.click('#preventa button[type=submit]');
-  check(`[${tag}] wrong NIT check digit is refused`, /dígito de verificación/.test(await txt(p, '#pv-err')));
-  await p.fill('#pv-dv', '8');
-  await p.locator('#preventa').screenshot({ path: join(OUT, `${tag}-5-preventa.png`) });
-  // Wait for the submit round-trip to finish (button back from "Enviando…"); Apps Script often takes > 3 s.
-  await p.click('#preventa button[type=submit]');
-  await p.waitForFunction(() => !document.querySelector('#preventa button[type=submit]').disabled, null, { timeout: 30000 }).catch(() => {});
-  const okShown = await p.locator('#pv-ok').isVisible();
-  const fallback = await p.locator('#pv-err a[href^="mailto:contact@jalonel.com"]').count();
-  check(`[${tag}] pre-order saved in the Sheet`, okShown ? true : null, okShown ? '' : 'backend not authorized yet');
-  check(`[${tag}] pre-order: success or e-mail fallback, never a silent failure`, okShown || fallback === 1);
+  // Paused since 2026-10-24: the form opens but is closed, nothing is sent.
+  check(`[${tag}] pre-order closed while paused`, await p.locator('#pv-razon').isDisabled() && await p.locator('#preventa button[type=submit]').isDisabled());
+  check(`[${tag}] pause note shown`, /cerradas durante la pausa/.test(await txt(p, '#preventa .paused-note')));
+  await p.locator('#preventa').evaluate((f) => f.requestSubmit());
+  check(`[${tag}] no pre-order sent`, !(await p.locator('#pv-ok').isVisible()));
 
   // ---- Forced variant B in a new tab: price COP 249.000 everywhere it is shown ----
   const pb = await ctx.newPage(); pb.on('pageerror', e => errors.push(String(e)));

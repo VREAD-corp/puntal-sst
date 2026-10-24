@@ -286,6 +286,7 @@
   };
   pv.addEventListener('submit', function (ev) {
     ev.preventDefault();
+    if (pv.getAttribute('data-paused')) return; // en pausa desde el 2026-10-24: no se envía ninguna reserva
     var err = $('#pv-err'), ok = $('#pv-ok'); err.hidden = true; ok.hidden = true;
     var data = {
       action: 'preventa', oferta: ($('input[name=oferta]:checked', pv) || {}).value, perfil: ($('input[name=perfil]:checked', pv) || {}).value,
